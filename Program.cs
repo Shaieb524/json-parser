@@ -52,6 +52,7 @@ static List<string> JsonTokenizer(string jsonString)
         }
         else
         {
+            // non str tokens
             var start = i;
             while (!char.IsWhiteSpace(jsonString[i]) && jsonString[i] != ',' && jsonString[i] != '}' && jsonString[i] != ':')
             {
