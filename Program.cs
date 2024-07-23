@@ -40,7 +40,6 @@ static List<string> JsonTokenizer(string jsonString)
         // check strings for keys and string values 
         else if (jsonString[i] == '\"')
         {
-            
             // the key is the string value between the two quotations
             var strStart = i;
             i++;
@@ -50,6 +49,15 @@ static List<string> JsonTokenizer(string jsonString)
             }
             i++;
             tokens.Add(jsonString.Substring(strStart, i - strStart));
+        }
+        else
+        {
+            var start = i;
+            while (!char.IsWhiteSpace(jsonString[i]) && jsonString[i] != ',' && jsonString[i] != '}' && jsonString[i] != ':')
+            {
+                i++;
+            }
+            tokens.Add(jsonString.Substring(start, i - start));
         }
  
     }
