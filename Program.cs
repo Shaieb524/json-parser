@@ -1,6 +1,6 @@
 ﻿Console.WriteLine("Start");
 
-string jsonString = "{ \"key\": \"value\"}";
+string jsonString =  "{ \"name\": \"John\", \"age\": 30, \"isMarried\": true }";
 
 if (jsonString[0] != '{' || jsonString[jsonString.Length - 1] != '}')
 {
@@ -37,20 +37,21 @@ static List<string> JsonTokenizer(string jsonString)
             i++;
         }
 
-        // check strings for keys
+        // check strings for keys and string values 
         else if (jsonString[i] == '\"')
         {
             
             // the key is the string value between the two quotations
-            var keyStart = i;
+            var strStart = i;
             i++;
             while (jsonString[i] != '\"')
             {
                 i++;
             }
             i++;
-            tokens.Add(jsonString.Substring(keyStart, i - keyStart));
-        } 
+            tokens.Add(jsonString.Substring(strStart, i - strStart));
+        }
+ 
     }
 
     return tokens;
