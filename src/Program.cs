@@ -36,7 +36,7 @@ var t = JsonLexer.JsonTokenizer(jsonString2);
 
 for (int i = 0; i< t.Count; i++)
 {
-    Console.WriteLine(t[i]);    
+    Console.WriteLine(t[i].Type + ":" + t[i].Value);    
 }
 
 

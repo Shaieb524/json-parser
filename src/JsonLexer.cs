@@ -71,6 +71,21 @@ public class JsonLexer
                         }
                         tokens.Add(new JsonToken(TokenType.Number, jsonString.Substring(numStart, i - numStart)));  
                     }
+                    else if (jsonString.Substring(i).StartsWith("true"))
+                    {
+                        tokens.Add(new JsonToken(TokenType.True, "true"));
+                        i += 4;
+                    } 
+                    else if (jsonString.Substring(i).StartsWith("false"))
+                    {
+                        tokens.Add(new JsonToken(TokenType.False, "false"));
+                        i += 5;
+                    } 
+                    else if (jsonString.Substring(i).StartsWith("null"))
+                    {
+                        tokens.Add(new JsonToken(TokenType.True, "null"));
+                        i += 4;
+                    } 
                 break;
 
             }
