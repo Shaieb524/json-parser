@@ -1,7 +1,6 @@
 public class JsonLexer
 {
 
-
     public static List<string> JsonTokenizer(string jsonString)
     {
         List<string> tokens = new List<string>();
@@ -17,8 +16,10 @@ public class JsonLexer
                 continue;
             }
 
+            var tt = jsonString[i];
+            
             // check structural characters  {, }, [, ], :, ,, strings (keys and values), numbers, true, false, null.
-            if (jsonString[i] == '{' || jsonString[i] == '}' || jsonString[i] == ':' || jsonString[i] == ',')
+            if ("{}[]:,".Contains(jsonString[i]))
             {
                 tokens.Add(jsonString[i].ToString());
                 i++;
@@ -41,7 +42,7 @@ public class JsonLexer
             {
                 // non str tokens
                 var start = i;
-                while (!char.IsWhiteSpace(jsonString[i]) && jsonString[i] != ',' && jsonString[i] != '}' && jsonString[i] != ':')
+                while (!"{}[]:, ".Contains(jsonString[i]))
                 {
                     i++;
                 }

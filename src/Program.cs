@@ -4,6 +4,27 @@ Console.WriteLine("Start");
 string jsonString =  "{ \"name\": \"John\", \"age\": 30, \"isMarried\": true }";
 string jsonString2 =  "{ \"name\": \"Bob\", \"age\": 32.5, \"isMarried\": false }";
 
+ string jsonString3 = @"{
+            ""name"": ""John"",
+            ""age"": 30,
+            ""isMarried"": true,
+            ""children"": [
+                {
+                    ""name"": ""Anna"",
+                    ""age"": 5
+                },
+                {
+                    ""name"": ""Ben"",
+                    ""age"": 3
+                }
+            ],
+            ""address"": {
+                ""street"": ""123 Main St"",
+                ""city"": ""Anytown"",
+                ""zipcode"": ""12345""
+            },
+            ""pets"": null
+        }";
 
 if (jsonString[0] != '{' || jsonString[jsonString.Length - 1] != '}')
 {
@@ -11,7 +32,7 @@ if (jsonString[0] != '{' || jsonString[jsonString.Length - 1] != '}')
     Environment.Exit(1);
 }
 
-var t = JsonLexer.JsonTokenizer(jsonString2);
+var t = JsonLexer.JsonTokenizer(jsonString3);
 
 for (int i = 0; i< t.Count; i++)
 {
