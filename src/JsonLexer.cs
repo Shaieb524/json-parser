@@ -1,54 +1,80 @@
+using System.Text.Json.Serialization;
+
 public class JsonLexer
 {
 
-    public static List<string> JsonTokenizer(string jsonString)
+    public static List<JsonToken> JsonTokenizer(string jsonString)
     {
-        List<string> tokens = new List<string>();
+        List<JsonToken> tokens = new List<JsonToken>();
 
         int i = 0;
 
         while (i <jsonString.Length)
         {
-            // skip white spaces
-            if (Char.IsWhiteSpace(jsonString[i]))
-            {
-                i++;
-                continue;
-            }
-
             var tt = jsonString[i];
-            
-            // check structural characters  {, }, [, ], :, ,, strings (keys and values), numbers, true, false, null.
-            if ("{}[]:,".Contains(jsonString[i]))
+            switch (jsonString[i])
             {
-                tokens.Add(jsonString[i].ToString());
-                i++;
+                case '{':
+                    tokens.Add(new JsonToken(TokenType.BraceOpen, "{"));
+                    i++;
+                break;
+
+                case '}':
+                    tokens.Add(new JsonToken(TokenType.BraceClose, "}"));   
+                    i++;
+                break;
+
+                case '[':
+                    tokens.Add(new JsonToken(TokenType.BracketOpen, "["));
+                    i++;
+                break;
+
+                case ']':
+                    tokens.Add(new JsonToken(TokenType.BracketClose, "]"));
+                    i++;
+                break;
+
+                case ':':
+                    tokens.Add(new JsonToken(TokenType.Colon, ":"));
+                    i++;
+                break;
+
+                case ',':
+                    tokens.Add(new JsonToken(TokenType.Comma, ","));
+                    i++;
+                break;
+
+                case '\"':
+                    int strStart = i;
+                    i++;
+                    while (i < jsonString.Length && jsonString[i] != '\"')
+                    {
+                        i++;
+                    }
+                    i++;
+                    tokens.Add(new JsonToken(TokenType.String, jsonString.Substring(strStart, i - strStart)));
+                break;
+                
+                case ' ' or '\t' or '\n' or '\r':
+                    i++;
+                continue;
+
+                default:
+                    // check digits 
+                    if (char.IsDigit(jsonString[i]) || jsonString[i] == '-' || jsonString[i] == '+')
+                    {
+                        int numStart = i;
+                        // TODO check this clause
+                        while (i < jsonString.Length && jsonString[i] != ',') 
+                        {
+                            i++;
+                        }
+                        tokens.Add(new JsonToken(TokenType.Number, jsonString.Substring(numStart, i - numStart)));  
+                    }
+                break;
+
             }
 
-            // check strings for keys and string values 
-            else if (jsonString[i] == '\"')
-            {
-                // the key is the string value between the two quotations
-                var strStart = i;
-                i++;
-                while (jsonString[i] != '\"')
-                {
-                    i++;
-                }
-                i++;
-                tokens.Add(jsonString.Substring(strStart, i - strStart));
-            }
-            else
-            {
-                // non str tokens
-                var start = i;
-                while (!"{}[]:, ".Contains(jsonString[i]))
-                {
-                    i++;
-                }
-                tokens.Add(jsonString.Substring(start, i - start));
-            }
-    
         }
 
         return tokens;

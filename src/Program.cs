@@ -32,7 +32,7 @@ if (jsonString[0] != '{' || jsonString[jsonString.Length - 1] != '}')
     Environment.Exit(1);
 }
 
-var t = JsonLexer.JsonTokenizer(jsonString3);
+var t = JsonLexer.JsonTokenizer(jsonString2);
 
 for (int i = 0; i< t.Count; i++)
 {
