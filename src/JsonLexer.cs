@@ -83,7 +83,7 @@ public class JsonLexer
                     } 
                     else if (jsonString.Substring(i).StartsWith("null"))
                     {
-                        tokens.Add(new JsonToken(TokenType.True, "null"));
+                        tokens.Add(new JsonToken(TokenType.Null, "null"));
                         i += 4;
                     } 
                 break;
