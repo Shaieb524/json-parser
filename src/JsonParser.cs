@@ -13,21 +13,51 @@ public class JsonParser
     public void ParseJsonTokens()
     {
         ParseObject();
-        JsonString();
+        ParseString();
+        ParseColon();
+        ParseValue();
     }
 
     private void ParseObject()
     {
-        if (tokens[position].Value != "{" && tokens[tokens.Count-1].Value != "}") throw new Exception("Expected Json Object");
-
+        if (tokens[position].Value != "{" && tokens[tokens.Count-1].Value != "}") throw new Exception("Expected JSON object!");
         position++;
     }
 
-    private void JsonString()
+    private void ParseString()
     {   
-        if (!tokens[position].Value.StartsWith("\"") || !tokens[position].Value.EndsWith("\"")) throw new Exception("Expected a string");
-
+        if (!tokens[position].Value.StartsWith("\"") || !tokens[position].Value.EndsWith("\"")) throw new Exception("Expected a string!");
         position++;
+    }
+
+    private void ParseColon()
+    {
+        if (tokens[position].Value != ":") throw new Exception("Expected a colon!");
+        position++;
+    }
+
+    private void ParseValue()
+    {
+        var currentTokenType = tokens[position].Type;
+
+        switch (currentTokenType)
+        {
+            case TokenType.BraceOpen:
+                ParseObject();
+                break;
+            case TokenType.String:
+                ParseString();
+                break;
+            case TokenType.Number:
+            case TokenType.True:
+            case TokenType.False:
+            case TokenType.Null:
+                position++;
+                break;
+            default:
+                throw new Exception("Unexpected token");
+        }
+
 
     }
 
