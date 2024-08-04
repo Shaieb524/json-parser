@@ -12,10 +12,6 @@ string jsonString3 = @"{
             {
                 ""name"": ""Anna"",
                 ""age"": 5
-            },
-            {
-                ""name"": ""Ben"",
-                ""age"": 3
             }
         ],
         ""address"": {
