@@ -1,7 +1,7 @@
 ﻿
 Console.WriteLine("Start");
 
-string jsonString =  "{ \"name\": \"John\", \"age\": 30, \"isMarried\": true }";
+string input =  "{ \"name\": \"John\", \"age\": 30, \"isMarried\": true }";
 string jsonString2 =  "{ \"name\": \"Bob\", \"age\": 32.5, \"isMarried\": false }";
 
 string jsonString3 = @"{
@@ -22,13 +22,14 @@ string jsonString3 = @"{
     ""pets"": null
 }";
 
-if (jsonString[0] != '{' || jsonString[jsonString.Length - 1] != '}')
+if (input[0] != '{' || input[input.Length - 1] != '}')
 {
     Console.WriteLine("Invalid JSON");
     Environment.Exit(1);
 }
 
-var tokens = JsonLexer.JsonTokenizer(jsonString3);
+JsonLexer lexer = new JsonLexer(jsonString3);
+List<JsonToken> tokens = lexer.Tokenize();
 
 for (int i = 0; i< tokens.Count; i++)
 {

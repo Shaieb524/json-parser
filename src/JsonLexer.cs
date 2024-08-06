@@ -1,97 +1,141 @@
+using System.IO.IsolatedStorage;
 using System.Text.Json.Serialization;
 
 public class JsonLexer
 {
 
-    public static List<JsonToken> JsonTokenizer(string jsonString)
+    private readonly string input;
+    private int position;
+
+    public JsonLexer(string _input)
+    {
+        this.input = _input;
+        this.position = 0;
+    }
+
+    public List<JsonToken> Tokenize()
     {
         List<JsonToken> tokens = new List<JsonToken>();
 
-        int i = 0;
 
-        while (i <jsonString.Length)
+        while (position <input.Length)
         {
-            var tt = jsonString[i];
-            switch (jsonString[i])
+
+            char currentChar = input[position];
+
+            if (char.IsWhiteSpace(currentChar)) 
+            {
+                position++;
+                continue;   
+            }
+
+            switch (currentChar)
             {
                 case '{':
                     tokens.Add(new JsonToken(TokenType.BraceOpen, "{"));
-                    i++;
+                    position++;
                 break;
 
                 case '}':
                     tokens.Add(new JsonToken(TokenType.BraceClose, "}"));   
-                    i++;
+                    position++;
                 break;
 
                 case '[':
                     tokens.Add(new JsonToken(TokenType.BracketOpen, "["));
-                    i++;
+                    position++;
                 break;
 
                 case ']':
                     tokens.Add(new JsonToken(TokenType.BracketClose, "]"));
-                    i++;
+                    position++;
                 break;
 
                 case ':':
                     tokens.Add(new JsonToken(TokenType.Colon, ":"));
-                    i++;
+                    position++;
                 break;
 
                 case ',':
                     tokens.Add(new JsonToken(TokenType.Comma, ","));
-                    i++;
+                    position++;
                 break;
 
                 case '\"':
-                    int strStart = i;
-                    i++;
-                    while (i < jsonString.Length && jsonString[i] != '\"')
-                    {
-                        i++;
-                    }
-                    i++;
-                    tokens.Add(new JsonToken(TokenType.String, jsonString.Substring(strStart, i - strStart)));
+                    tokens.Add(ReadString());
                 break;
                 
                 case ' ' or '\t' or '\n' or '\r':
-                    i++;
+                    position++;
                 continue;
 
                 default:
-                    // check digits 
-                    if (char.IsDigit(jsonString[i]) || jsonString[i] == '-' || jsonString[i] == '+')
-                    {
-                        int numStart = i;
-                        // TODO check this clause
-                        while (i < jsonString.Length && jsonString[i] != ',') 
-                        {
-                            i++;
-                        }
-                        tokens.Add(new JsonToken(TokenType.Number, jsonString.Substring(numStart, i - numStart)));  
-                    }
-                    else if (jsonString.Substring(i).StartsWith("true"))
-                    {
-                        tokens.Add(new JsonToken(TokenType.True, "true"));
-                        i += 4;
-                    } 
-                    else if (jsonString.Substring(i).StartsWith("false"))
-                    {
-                        tokens.Add(new JsonToken(TokenType.False, "false"));
-                        i += 5;
-                    } 
-                    else if (jsonString.Substring(i).StartsWith("null"))
-                    {
-                        tokens.Add(new JsonToken(TokenType.Null, "null"));
-                        i += 4;
-                    } 
+                    if (char.IsDigit(currentChar) || currentChar == '-' || currentChar == '+')
+                        tokens.Add(ReadDigit());  
+                    else if (char.IsLetter(currentChar))
+                        tokens.Add(ReadKeyword());
+                    else
+                        throw new Exception($"Unexpected character '{currentChar}' at position {position}");
                 break;
-
             }
 
         }
 
         return tokens;
+    }
+
+
+    private JsonToken ReadDigit()
+    {
+        int numStart = position;
+        position++;
+
+        while (position < input.Length && input[position] != ',') 
+        {
+            position++;
+        }
+
+        return new JsonToken(TokenType.Number, input.Substring(numStart, position - numStart));
+    }
+
+    private JsonToken ReadString()
+    {
+        int strStart = position;
+        position++;
+
+        while (position < input.Length && input[position] != '\"')
+        {
+            position++;
+        }
+        position++;
+
+        return new JsonToken(TokenType.String, input.Substring(strStart, position - strStart));
+    }
+
+    private JsonToken ReadKeyword()
+    {
+        int start = position;
+
+        while (position < input.Length && char.IsLetter(input[position]))
+        {
+            position++;
+        }
+
+        string value = input.Substring(start, position - start);
+
+        switch (value)
+        {
+            case "true":
+                return new JsonToken(TokenType.True, value);
+
+            case "false":
+                return new JsonToken(TokenType.False, value);
+
+            case "null":
+                return new JsonToken(TokenType.Null, value);
+
+            default:
+                throw new Exception($"Unknown keyword '{value}' at position {start}");
+        }
     }
 }
