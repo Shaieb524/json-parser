@@ -2,7 +2,6 @@
 Console.WriteLine("Start");
 
 string input =  "{ \"name\": \"John\", \"age\": 30, \"isMarried\": true }";
-string jsonString2 =  "{ \"name\": \"Bob\", \"age\": 32.5, \"isMarried\": false }";
 
 string jsonString3 = @"{
         ""name"": ""John"",

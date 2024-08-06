@@ -29,6 +29,8 @@ public class JsonParser
         while (true)
         {
             ParseJsonPair();
+            if (CurrentToken is null) return;
+
             if (CurrentToken.Type == TokenType.BraceClose)
             {
                 NextToken();
@@ -66,6 +68,8 @@ public class JsonParser
         while (true)
         {
             ParseJsonValue();
+            if (CurrentToken is null) return;
+
             if (CurrentToken.Type == TokenType.BracketClose)
             {
                 NextToken();
