@@ -19,7 +19,14 @@ string jsonString3 = @"{
         ""address"": {
             ""street"": ""123 Main St"",
             ""city"": ""Anytown"",
-            ""zipcode"": ""12345""
+            ""zipcodes"": [
+                {
+                    ""code1"": 1
+                }, 
+                {
+                    ""code2"": 2
+                }
+            ]
         },
     ""pets"": null
 }";
