@@ -1,62 +1,53 @@
-﻿Console.WriteLine("Start");
+﻿class Program
+{
+    public static void Main()
+    {
+        string projectRoot = Directory.GetCurrentDirectory();
+        string testsDirPath = $"{projectRoot}\\tests";
+        string[] jsonFiles = Directory.GetFiles(testsDirPath, "*.json");
 
-string input =  "{ \"name\": \"John\", \"age\": 30, \"isMarried\": true }";
+        foreach (string file in jsonFiles)
+        {
+            try
+            {
+                string fileName = Path.GetFileName(file);
+                Console.WriteLine($"====== Processing file {fileName} ======");
 
-string jsonString3 = @"{
-        ""name"": ""John"",
-        ""age"": 30,
-        ""isMarried"": true,
-        ""children"": [
-            {
-                ""name"": ""Anna"",
-                ""age"": 5
-            },
-            {
-                ""name"": ""Bob"",
-                ""age"": 7
+                string jsonContent = File.ReadAllText(file);
+                ParseJsonString(jsonContent);
+
+                Console.WriteLine(); 
             }
-        ],
-        ""address"": {
-            ""street"": ""123 Main St"",
-            ""city"": ""Anytown"",
-            ""zipcodes"": [
-                {
-                    ""code1"": 1
-                }, 
-                {
-                    ""code2"": 2
-                }
-            ]
-        },
-    ""pets"": null
-}";
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading file {file}: {ex.Message}");
+            }
+        }
+    }
 
-if (input[0] != '{' || input[input.Length - 1] != '}')
-{
-    Console.WriteLine("Invalid JSON");
-    Environment.Exit(1);
-}
+    private static void ParseJsonString(string jsonString)
+    {
+        JsonLexer lexer = new JsonLexer(jsonString);
+        List<JsonToken> tokens = lexer.Tokenize();
 
-JsonLexer lexer = new JsonLexer(jsonString3);
-List<JsonToken> tokens = lexer.Tokenize();
+        for (int i = 0; i< tokens.Count; i++)
+        {
+            Console.WriteLine(tokens[i].Type + ":" + tokens[i].Value);    
+        }
 
-for (int i = 0; i< tokens.Count; i++)
-{
-    Console.WriteLine(tokens[i].Type + ":" + tokens[i].Value);    
-}
+        Console.WriteLine("---------- Custom Parser -----------");
 
+        var parser = new JsonParser(tokens);
 
-Console.WriteLine("---------- Custom Parser -----------");
-
-var parser = new JsonParser(tokens);
-
-if (parser.ParseJsonTokens())
-{
-    Console.WriteLine("Valid JSON");
-    Environment.Exit(0);
-}
-else
-{
-    Console.WriteLine("Invalid JSON");
-    Environment.Exit(1);
+        if (parser.ParseJsonTokens())
+        {
+            Console.WriteLine("Valid JSON");
+            Environment.Exit(0);
+        }
+        else
+        {
+            Console.WriteLine("Invalid JSON");
+            Environment.Exit(1);
+        }
+    }
 }
