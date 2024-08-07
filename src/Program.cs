@@ -36,6 +36,16 @@ for (int i = 0; i< tokens.Count; i++)
 }
 
 
-var tt = new JsonParser(tokens);
+var parser = new JsonParser(tokens);
 
-tt.ParseJsonTokens();
+
+if (parser.ParseJsonTokens())
+{
+    Console.WriteLine("Valid JSON");
+    Environment.Exit(0);
+}
+else
+{
+    Console.WriteLine("Invalid JSON");
+    Environment.Exit(1);
+}

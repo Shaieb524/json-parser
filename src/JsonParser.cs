@@ -16,9 +16,18 @@ public class JsonParser
 
     private JsonToken NextToken() => tokens[currentTokenIndex++];
 
-    public void ParseJsonTokens()
+    public bool ParseJsonTokens()
     {
-        ParseJsonValue();
+        try 
+        {
+            ParseJsonValue();
+            return currentTokenIndex == tokens.Count; // Ensure all tokens are consumed
+        } 
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Parsing error: {ex.Message}");
+            return false;
+        }
     }
 
     private void ParseObject()
