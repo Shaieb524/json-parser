@@ -1,5 +1,4 @@
-﻿
-Console.WriteLine("Start");
+﻿Console.WriteLine("Start");
 
 string input =  "{ \"name\": \"John\", \"age\": 30, \"isMarried\": true }";
 
@@ -11,6 +10,10 @@ string jsonString3 = @"{
             {
                 ""name"": ""Anna"",
                 ""age"": 5
+            },
+            {
+                ""name"": ""Bob"",
+                ""age"": 7
             }
         ],
         ""address"": {
@@ -36,8 +39,9 @@ for (int i = 0; i< tokens.Count; i++)
 }
 
 
-var parser = new JsonParser(tokens);
+Console.WriteLine("---------- Custom Parser -----------");
 
+var parser = new JsonParser(tokens);
 
 if (parser.ParseJsonTokens())
 {

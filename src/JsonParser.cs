@@ -1,5 +1,3 @@
-using System.Text.Json.Nodes;
-
 public class JsonParser
 {
     private List<JsonToken> tokens { get; set; }
@@ -37,6 +35,10 @@ public class JsonParser
 
         while (true)
         {
+            // TODO this clause check was done here to skip the { token for arrays with multiple object
+            // TBH it should be refined 
+            if (CurrentToken.Type == TokenType.BraceOpen) NextToken();
+
             ParseJsonPair();
             if (CurrentToken is null) return;
 
@@ -45,6 +47,7 @@ public class JsonParser
                 NextToken();
                 return;
             }
+
             if (NextToken().Type != TokenType.Comma) throw new Exception("Expected Comma!");
         }
 
@@ -88,13 +91,13 @@ public class JsonParser
             // there should be comma after each value
             if (NextToken().Type != TokenType.Comma) throw new Exception("Expected Comma!");
             
+            NextToken();
         }
     }
 
     private void ParseJsonValue()
     {
         var currentTokenType = tokens[currentTokenIndex].Type;
-        var tt = tokens[currentTokenIndex];
         
         switch (currentTokenType)
         {
