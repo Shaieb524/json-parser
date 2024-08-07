@@ -18,6 +18,12 @@ public class JsonParser
     {
         try 
         {
+            if (
+                (tokens[currentTokenIndex].Type != TokenType.BraceOpen && tokens[tokens.Count-1].Type != TokenType.BraceClose)
+                ||
+                (tokens[currentTokenIndex].Type != TokenType.BracketOpen && tokens[tokens.Count-1].Type != TokenType.BracketClose)
+            ) return false;
+            
             ParseJsonValue();
             return currentTokenIndex == tokens.Count; // Ensure all tokens are consumed
         } 
