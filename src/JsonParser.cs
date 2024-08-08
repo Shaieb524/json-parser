@@ -14,16 +14,26 @@ public class JsonParser
 
     private JsonToken NextToken() => tokens[currentTokenIndex++];
 
+
+    private bool isJsonObj()
+    {
+        return tokens[0].Value == "{" && tokens[tokens.Count-1].Value == "}";
+    }
+
+    private bool isJsonArr()
+    {
+        return tokens[0].Value == "[" && tokens[tokens.Count-1].Value == "]";
+    }
+
     public bool ParseJsonTokens()
     {
         try 
         {
-            if (
-                (tokens[currentTokenIndex].Type != TokenType.BraceOpen && tokens[tokens.Count-1].Type != TokenType.BraceClose)
-                ||
-                (tokens[currentTokenIndex].Type != TokenType.BracketOpen && tokens[tokens.Count-1].Type != TokenType.BracketClose)
-            ) return false;
-            
+            var isobj = isJsonObj();
+            var isarr = isJsonArr();
+
+            if (!isJsonObj() && !isJsonArr()) throw new Exception("Can't parse JSON start or end!");
+
             ParseJsonValue();
             return currentTokenIndex == tokens.Count; // Ensure all tokens are consumed
         } 

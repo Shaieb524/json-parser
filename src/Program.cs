@@ -27,6 +27,7 @@
 
     private static void ParseJsonString(string jsonString)
     {
+        
         JsonLexer lexer = new JsonLexer(jsonString);
         List<JsonToken> tokens = lexer.Tokenize();
 
@@ -42,12 +43,10 @@
         if (parser.ParseJsonTokens())
         {
             Console.WriteLine("Valid JSON");
-            Environment.Exit(0);
         }
         else
         {
             Console.WriteLine("Invalid JSON");
-            Environment.Exit(1);
         }
     }
 }
