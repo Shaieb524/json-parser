@@ -29,9 +29,6 @@ public class JsonParser
     {
         try 
         {
-            var isobj = isJsonObj();
-            var isarr = isJsonArr();
-
             if (!isJsonObj() && !isJsonArr()) throw new Exception("Can't parse JSON start or end!");
 
             ParseJsonValue();
