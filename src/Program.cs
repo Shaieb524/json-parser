@@ -33,7 +33,7 @@
 
         for (int i = 0; i< tokens.Count; i++)
         {
-            Console.WriteLine(tokens[i].Type + ":" + tokens[i].Value);    
+            Console.WriteLine(tokens[i].Type + " --> " + tokens[i].Value);    
         }
 
         Console.WriteLine("---------- Custom Parser -----------");

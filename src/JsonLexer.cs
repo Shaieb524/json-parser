@@ -154,6 +154,11 @@ public class JsonLexer
                         throw new Exception($"Invalid escape character '\\{currentChar}' at position {position}");
                 }
             }
+            else if (currentChar == '\t')
+            {
+                // Directly handle the tab character
+                throw new Exception($"Invalid control character '{currentChar}' in string at position {position}");
+            }
             else
             {
                 result.Append(currentChar);
