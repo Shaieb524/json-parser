@@ -1,5 +1,6 @@
 using System.IO.IsolatedStorage;
 using System.Text.Json.Serialization;
+using System.Xml.XPath;
 
 public class JsonLexer
 {
@@ -145,6 +146,9 @@ public class JsonLexer
                     case 't':
                         result.Append('\t');
                         break;
+                    case 'u':
+                        result.Append(ParseHexChar());
+                        break;
                     default:
                         throw new Exception($"Invalid escape character '\\{currentChar}' at position {position}");
                 }
@@ -163,6 +167,35 @@ public class JsonLexer
         }
 
         return new JsonToken(TokenType.String, result.ToString());
+    }
+
+    private string ParseHexChar()
+    {
+        // Handle Unicode escape sequence \uXXXX
+        if (position + 4 >= input.Length)
+            throw new Exception("Unexpected end of input in Unicode escape sequence");
+
+        string hex = input.Substring(position + 1, 4);
+        
+        var isHex = IsHex(hex.ToCharArray(0,4));
+
+        if (!isHex) throw new Exception($"Invalid Unicode escape sequence: \\u{hex}");
+        
+        return hex;
+    }
+
+    private bool IsHex(char[] chars)
+    {
+        bool isHex; 
+        foreach(var c in chars)
+        {
+            isHex = ((c >= '0' && c <= '9') || 
+                    (c >= 'a' && c <= 'f') || 
+                    (c >= 'A' && c <= 'F'));
+
+            if(!isHex) return false;
+        }
+        return true;
     }
 
     private JsonToken ReadKeyword()
