@@ -61,11 +61,11 @@ public class JsonLexer
                     position++;
                 break;
 
-                case '\"':
+                case '"':
                     tokens.Add(ReadString());
                 break;
                 
-                case ' ' or '\t' or '\n' or '\r':
+                case ' ' or '\t' or '\n' or '\r' or '\b' or '\f':
                     position++;
                 continue;
 
@@ -100,16 +100,69 @@ public class JsonLexer
 
     private JsonToken ReadString()
     {
-        int strStart = position;
-        position++;
+        position++; 
+        var result = new System.Text.StringBuilder();
 
-        while (position < input.Length && input[position] != '\"')
+        while (position < input.Length)
         {
+            char currentChar = input[position];
+
+            if (currentChar == '"')
+            {
+                // Closing quote
+                position++;
+                break;
+            }
+
+            if (currentChar == '\\')
+            {
+                // Handle escaped characters
+                position++;
+                if (position >= input.Length)
+                    throw new Exception("Unexpected end of input after backslash");
+
+                currentChar = input[position];
+
+                switch (currentChar)
+                {
+                    case '"':
+                    case '\\':
+                    case '/':
+                        result.Append(currentChar);
+                        break;
+                    case 'b':
+                        result.Append('\b');
+                        break;
+                    case 'f':
+                        result.Append('\f');
+                        break;
+                    case 'n':
+                        result.Append('\n');
+                        break;
+                    case 'r':
+                        result.Append('\r');
+                        break;
+                    case 't':
+                        result.Append('\t');
+                        break;
+                    default:
+                        throw new Exception($"Invalid escape character '\\{currentChar}' at position {position}");
+                }
+            }
+            else
+            {
+                result.Append(currentChar);
+            }
+
             position++;
         }
-        position++;
 
-        return new JsonToken(TokenType.String, input.Substring(strStart, position - strStart));
+        if (position >= input.Length || input[position - 1] != '"')
+        {
+            throw new Exception("Unterminated string literal");
+        }
+
+        return new JsonToken(TokenType.String, result.ToString());
     }
 
     private JsonToken ReadKeyword()
