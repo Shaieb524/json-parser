@@ -45,7 +45,8 @@ public class JsonParser
     {
         if (tokens[currentTokenIndex].Value != "{" && tokens[tokens.Count-1].Value != "}") throw new Exception("Expected JSON object!");
         currentTokenIndex++;
-
+        if (CurrentToken.Type == TokenType.BraceClose) { NextToken(); return; } // Empty object
+        
         while (true)
         {
             // TODO this clause check was done here to skip the { token for arrays with multiple object
@@ -61,7 +62,8 @@ public class JsonParser
                 return;
             }
 
-            if (NextToken().Type != TokenType.Comma) throw new Exception("Expected Comma!");
+            if (NextToken().Type != TokenType.Comma)
+                throw new Exception("Expected Comma!");
         }
 
     }
@@ -88,7 +90,9 @@ public class JsonParser
     {
         if (tokens[currentTokenIndex].Type != TokenType.BracketOpen) throw new Exception("Expected open bracket!");
         currentTokenIndex++;
-
+        
+        if (CurrentToken.Type == TokenType.BracketClose) { NextToken(); return; } // Empty array
+       
         // keep parsing values 
         while (true)
         {
@@ -101,8 +105,13 @@ public class JsonParser
                 return;
             }
 
+            if (CurrentToken.Type == TokenType.BraceClose)
+            {
+                NextToken();
+            }
+
             // there should be comma after each value
-            if (NextToken().Type != TokenType.Comma) throw new Exception("Expected Comma!");
+            if (CurrentToken.Type != TokenType.Comma) throw new Exception("Expected Comma!");
             
             NextToken();
         }
