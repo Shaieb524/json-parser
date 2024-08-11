@@ -97,6 +97,16 @@ public class JsonParser
         while (true)
         {
             ParseJsonValue();
+
+            // hande the case where an obj has array and string key after we face : after the str process
+            // so here we have : after the str we have to skip
+            // TODO fix dis shit 
+            if (CurrentToken.Type == TokenType.Colon)
+            {
+                NextToken();
+                return;
+            } 
+
             if (CurrentToken is null) return;
 
             if (CurrentToken.Type == TokenType.BracketClose)

@@ -93,6 +93,7 @@ public class JsonLexer
 
         while (position < input.Length && input[position] != ',') 
         {
+            if (input[position] == ']') break; // remove braket close from last digint like this: 2] 
             position++;
         }
 
