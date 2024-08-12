@@ -159,6 +159,11 @@ public class JsonLexer
                 // Directly handle the tab character
                 throw new Exception($"Invalid control character '{currentChar}' in string at position {position}");
             }
+            else if (currentChar == '\n' || currentChar == '\r')
+            {
+                // JSON does not allow unescaped line breaks within strings
+                throw new Exception($"Invalid line break in string at position {position}");
+            }
             else
             {
                 result.Append(currentChar);
