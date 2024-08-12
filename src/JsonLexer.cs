@@ -90,10 +90,12 @@ public class JsonLexer
     {
         int numStart = position;
         position++;
+        var nn = input[position];
 
         while (position < input.Length && input[position] != ',') 
         {
             if (input[position] == ']') break; // remove braket close from last digint like this: 2] 
+            if (!char.IsDigit(input[position])) throw new Exception($"Invalid number format: expected digits after exponent at position {position}");
             position++;
         }
 
